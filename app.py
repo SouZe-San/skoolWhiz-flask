@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Flask
+
 from flask_restful import Api
 from src.routes.routes import TodoListResource, TodoResource
 from src.database import db_initialize
@@ -9,8 +9,7 @@ from flasgger import Swagger
 app = Flask(__name__)
 api = Api(app)
 Swagger(app)
-# for CORS
-# CORS(app, upports_credentials=True, origins=["<URL>"])
+
 
 # Initialize database from schema.sql
 db_initialize()
