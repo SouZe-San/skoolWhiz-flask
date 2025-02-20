@@ -1,36 +1,41 @@
 from flask import Flask
-
 from flask_restful import Api
-from src.routes.routes import TodoListResource, TodoResource
+from src.routes.routes import todo_bp
 from src.database import db_initialize
 import logging
 from flasgger import Swagger
 
 app = Flask(__name__)
-api = Api(app)
-Swagger(app)
+# api = Api(app)
 
+Swagger(app, template={
+    "info": {
+        "title": "My Flask API",
+        "description": "An example API using Flask and Swagger",
+        "version": "1.0.0"
+    }
+})
 
 # Initialize database from schema.sql
 db_initialize()
 
 
-# Sample data storage
-data_storage = "Hello ! this is Prediction API"
-
-
-def get_data():
-    return data_storage
-
-
 @app.route('/', methods=['GET'])
 def home():
-    return "Welcome to the Flask API!\n add /api/ for GET and POST requests.", 200
+    """
+        This is an Test Url
+        ---
+        responses:
+            200:
+                description: A successful response
+                examples:
+                    application/text: "Welcome 🚀"
+    """
+    return "Welcome 🚀", 200
 
 
 # Register API routes
-api.add_resource(TodoListResource, "/todos")
-api.add_resource(TodoResource, "/todos/<int:todo_id>")
+app.register_blueprint(todo_bp, url_prefix='/todos')
 
 
 # Logging
