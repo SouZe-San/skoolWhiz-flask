@@ -32,8 +32,8 @@ A simple **RESTful API** for managing **Todo items** using **Flask** and **SQLit
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/SouZe-San/skoolWhiz-flask.git
+cd skoolWhiz-flask
 ```
 
 ### 2️⃣ Create a Virtual Environment
@@ -77,9 +77,9 @@ python app.py
 | `GET`    | `/`           | Api Check              |
 | `GET`    | `/todos/`     | Retrieve all todos     |
 | `POST`   | `/todos/`     | Create a new todo      |
-| `GET`    | `/todos/<id>` | Retrieve a single todo |
-| `PUT`    | `/todos/<id>` | Update a todo          |
-| `DELETE` | `/todos/<id>` | Delete a todo          |
+| `GET`    | `/todos/:id`  | Retrieve a single todo |
+| `PUT`    | `/todos/:id`  | Update a todo          |
+| `DELETE` | `/todos/:id`  | Delete a todo          |
 
 ---
 
