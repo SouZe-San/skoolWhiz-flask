@@ -31,16 +31,23 @@ class TodoListResource(Resource):
     @api.marshal_list_with(todo_model)
     def get(self):
         """Retrieve all todos"""
-        conn, cursor = create_connection()
-        cursor.execute("SELECT * FROM todos")
-        todos = cursor.fetchall()
-        conn.close()
+        try:
+            conn, cursor = create_connection()
+            cursor.execute("SELECT * FROM todos")
+            todos = cursor.fetchall()
+            conn.close()
 
-        return [
-            {"id": row[0], "title": row[1],
-                "description": row[2], "completed": bool(row[3])}
-            for row in todos
-        ]
+            return [
+                {"id": row[0], "title": row[1],
+                    "description": row[2], "completed": bool(row[3])}
+                for row in todos
+            ]
+        except sqlite3.Error as e:
+            print("(db) From get TODOS: ", e)
+            return {"error": "Query Issus"}, 408
+        except Exception as e:
+            print("From get TODOS: ", e)
+            return {"error": "Unknown Error"}, 500
 
     @api.doc("create_todo")
     @api.expect(todo_create_model)
@@ -48,16 +55,27 @@ class TodoListResource(Resource):
         """Create a new todo"""
         data = request.get_json()
         if "title" not in data:
-            return {"error": "Title is required"}, 400
+            return {"error": "Title is required"}, 406
+        if not isinstance(data["title"], str):
+            return jsonify({"error": "Title must be a string"}), 406
+        if "description" in data and not isinstance(data["description"], str):
+            return jsonify({"error": "Description must be a string"}), 406
 
-        conn, cursor = create_connection()
-        cursor.execute("INSERT INTO todos (title, description) VALUES (?, ?)",
-                       (data["title"], data.get("description", "")))
-        conn.commit()
-        todo_id = cursor.lastrowid
-        conn.close()
+        try:
+            conn, cursor = create_connection()
+            cursor.execute("INSERT INTO todos (title, description) VALUES (?, ?)",
+                           (data["title"], data.get("description", "")))
+            conn.commit()
+            todo_id = cursor.lastrowid
+            conn.close()
 
-        return {"message": "Todo created", "id": todo_id}, 201
+            return {"message": "Todo created", "id": todo_id}, 201
+        except sqlite3.Error as e:
+            print("(db) From create TODOS: ", e)
+            return {"error": "Query Issus"}, 408
+        except Exception as e:
+            print("From create TODOS: ", e)
+            return {"error": "Unknown Error"}, 500
 
 
 @api.route("/<int:todo_id>")
@@ -67,47 +85,77 @@ class TodoResource(Resource):
     @api.marshal_with(todo_model)
     def get(self, todo_id):
         """Retrieve a single todo"""
-        conn, cursor = create_connection()
-        cursor.execute("SELECT * FROM todos WHERE id = ?", (todo_id,))
-        todo = cursor.fetchone()
-        conn.close()
+        try:
+            conn, cursor = create_connection()
+            cursor.execute("SELECT * FROM todos WHERE id = ?", (todo_id,))
+            todo = cursor.fetchone()
+            conn.close()
 
-        if not todo:
-            return {"error": "Todo not found"}, 404
+            if not todo:
+                return {"error": "Todo not found"}, 404
 
-        return {"id": todo[0], "title": todo[1], "description": todo[2], "completed": bool(todo[3])}
+            return {"id": todo[0], "title": todo[1], "description": todo[2], "completed": bool(todo[3])}
+        except sqlite3.Error as e:
+            print("(db) From get TODO: ", e)
+            return {"error": "Query Issus"}, 408
+        except Exception as e:
+            print("From get TODO: ", e)
+            return {"error": "Unknown Error"}, 500
 
     @api.doc("update_todo")
     @api.expect(todo_update_model)
     def put(self, todo_id):
         """Update a todo"""
         data = request.get_json()
-        conn, cursor = create_connection()
-        cursor.execute("SELECT * FROM todos WHERE id = ?", (todo_id,))
-        todo = cursor.fetchone()
+        if "title" not in data:
+            return jsonify({"error": "Title is required"}), 406
+        if not isinstance(data["title"], str):
+            return jsonify({"error": "Title must be a string"}), 406
+        if "description" in data and not isinstance(data["description"], str):
+            return jsonify({"error": "Description must be a string"}), 406
+        if "completed" in data and not isinstance(data["completed"], bool):
+            return jsonify({"error": "completed must be a boolean"}), 406
 
-        if not todo:
-            return {"error": "Todo not found"}, 404
+        try:
+            conn, cursor = create_connection()
+            cursor.execute("SELECT * FROM todos WHERE id = ?", (todo_id,))
+            todo = cursor.fetchone()
 
-        cursor.execute("""
-            UPDATE todos 
-            SET title = ?, description = ?, completed = ?
-            WHERE id = ?
-        """, (data.get("title", todo[1]),
-              data.get("description", todo[2]),
-              int(data.get("completed", todo[3])),
-              todo_id))
+            if not todo:
+                return {"error": "Todo not found"}, 404
 
-        conn.commit()
-        conn.close()
-        return {"message": "Todo updated"}
+            cursor.execute("""
+                UPDATE todos 
+                SET title = ?, description = ?, completed = ?
+                WHERE id = ?
+            """, (data.get("title", todo[1]),
+                  data.get("description", todo[2]),
+                  int(data.get("completed", todo[3])),
+                  todo_id))
+
+            conn.commit()
+            conn.close()
+            return {"message": "Todo updated"}
+        except sqlite3.Error as e:
+            print("(db) From update TODO: ", e)
+            return {"error": "Query Issus"}, 408
+        except Exception as e:
+            print("From update TODO: ", e)
+            return {"error": "Unknown Error"}, 500
 
     @api.doc("delete_todo")
     def delete(self, todo_id):
         """Delete a todo"""
-        conn, cursor = create_connection()
-        cursor.execute("DELETE FROM todos WHERE id = ?", (todo_id,))
-        conn.commit()
-        conn.close()
+        try:
+            conn, cursor = create_connection()
+            cursor.execute("DELETE FROM todos WHERE id = ?", (todo_id,))
+            conn.commit()
+            conn.close()
 
-        return {"message": "Todo deleted"}
+            return {"message": "Todo deleted"}
+        except sqlite3.Error as e:
+            print("(db) From delete TODO: ", e)
+            return {"error": "Query Issus"}, 408
+        except Exception as e:
+            print("From delete TODO: ", e)
+            return {"error": "Unknown Error"}, 500
