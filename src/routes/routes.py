@@ -14,12 +14,10 @@ def get_todos():
         200:
             description: A list of todo items
             examples:
-                application/json: {
+                application/json:
                     [
-                        {"id": 1, "title": "Sample Task", "description": "Do something", "completed": false}
-                        {"id": 2, "title": "Sample Task2", "description": "Do,t do something", "completed": true}
+                        {"id": 1, "title": "Task", "description": "Details", "completed": false}
                     ]
-                    }
     """
     conn, cursor = create_connection()
     cursor.execute("SELECT * FROM todos")
@@ -56,9 +54,13 @@ def create_todo():
                     description: Task details
     responses:
         201:
-            description: Todo item created successfully
+            description: Todo created successfully
             examples:
-                application/json: {"message": "Todo created", "id": 1}
+                application/json:
+                    {
+                        "message": "Todo created",
+                        "id": 1
+                    }
     """
     data = request.get_json()
     if "title" not in data:

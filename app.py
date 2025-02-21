@@ -6,7 +6,7 @@ import logging
 from flasgger import Swagger
 
 app = Flask(__name__)
-# api = Api(app)
+api = Api(app)
 
 Swagger(app, template={
     "info": {
@@ -29,7 +29,7 @@ def home():
             200:
                 description: A successful response
                 examples:
-                    application/text: "Welcome 🚀"
+                        application/text: "Welcome 🚀"
     """
     return "Welcome 🚀", 200
 
