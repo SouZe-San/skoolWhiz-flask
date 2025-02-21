@@ -167,6 +167,8 @@ def update_todo(todo_id):
         return jsonify({"error": "Title must be a string"}), 406
     if "description" in data and not isinstance(data["description"], str):
         return jsonify({"error": "Description must be a string"}), 406
+    if "completed" in data and not isinstance(data["completed"], bool):
+        return jsonify({"error": "completed must be a boolean"}), 406
     try:
         conn, cursor = create_connection()
         cursor.execute("SELECT * FROM todos WHERE id = ?", (todo_id,))
