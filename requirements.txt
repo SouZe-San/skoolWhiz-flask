@@ -1,0 +1,56 @@
+altair==5.5.0
+aniso8601 @ file:///tmp/build/80754af9/aniso8601_1614708839015/work
+attrs==24.2.0
+blinker @ file:///C:/b/abs_d9y2dm7cw2/croot/blinker_1696539752170/work
+cachetools==5.5.0
+certifi==2024.8.30
+charset-normalizer==3.4.0
+click @ file:///C:/b/abs_f9ihnt72pu/croot/click_1698129847492/work
+colorama @ file:///C:/ci_311/colorama_1676422310965/work
+exceptiongroup @ file:///C:/b/abs_c5h1o1_b5b/croot/exceptiongroup_1706031441653/work
+flasgger @ file:///home/conda/feedstock_root/build_artifacts/flasgger_1735210317411/work
+Flask @ file:///C:/b/abs_f9w7doyu0h/croot/flask_1716545924884/work
+Flask-Cors @ file:///tmp/build/80754af9/flask-cors_1609957731919/work
+Flask-RESTful @ file:///home/conda/feedstock_root/build_artifacts/flask-restful_1734352849574/work
+flask-restx @ file:///home/conda/feedstock_root/build_artifacts/flask-restx_1733730756934/work
+gitdb==4.0.11
+GitPython==3.1.43
+gunicorn==23.0.0
+idna==3.10
+importlib_resources @ file:///C:/b/abs_e9f8_0_2dq/croot/importlib_resources-suite_1720641112288/work
+iniconfig @ file:///home/linux1/recipes/ci/iniconfig_1610983019677/work
+itsdangerous @ file:///C:/b/abs_c4vwgdr5yn/croot/itsdangerous_1716533399914/work
+Jinja2 @ file:///C:/b/abs_ddyeze2h6_/croot/jinja2_1730903330414/work
+jsonschema @ file:///C:/b/abs_394_t6__xq/croot/jsonschema_1728486718320/work
+jsonschema-specifications @ file:///C:/b/abs_0brvm6vryw/croot/jsonschema-specifications_1699032417323/work
+markdown-it-py==3.0.0
+MarkupSafe @ file:///C:/b/abs_ecfdqh67b_/croot/markupsafe_1704206030535/work
+mdurl==0.1.2
+mistune @ file:///C:/ci_311/mistune_1676425111783/work
+narwhals==1.17.0
+packaging @ file:///C:/b/abs_3by6s2fa66/croot/packaging_1734472138782/work
+pandas==2.2.3
+pluggy @ file:///C:/b/abs_dfec_m79vo/croot/pluggy_1733170145382/work
+protobuf==5.29.1
+pyarrow==18.1.0
+pydeck==0.9.1
+Pygments==2.18.0
+pytest @ file:///home/conda/feedstock_root/build_artifacts/pytest_1733217473289/work
+python-dateutil @ file:///C:/b/abs_3au_koqnbs/croot/python-dateutil_1716495777160/work
+pytz @ file:///C:/b/abs_6ap4tsz1ox/croot/pytz_1713974360290/work
+PyYAML @ file:///C:/b/abs_14xkfs39bx/croot/pyyaml_1728657968772/work
+referencing @ file:///C:/b/abs_09f4hj6adf/croot/referencing_1699012097448/work
+requests==2.32.3
+rich==13.9.4
+rpds-py @ file:///C:/b/abs_0c6z5kcdb6/croot/rpds-py_1736545465023/work
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+smmap==5.0.1
+tenacity==9.0.0
+toml==0.10.2
+tomli @ file:///C:/ci_311/tomli_1676422027483/work
+tornado==6.4.2
+typing_extensions==4.12.2
+tzdata==2024.2
+urllib3==2.2.3
+watchdog==6.0.0
+Werkzeug @ file:///C:/b/abs_b21bhstb1q/croot/werkzeug_1731005800632/work
