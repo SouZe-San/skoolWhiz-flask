@@ -4,6 +4,10 @@ from src.database import create_connection
 
 todo_bp = Blueprint("todos", __name__)
 
+# @Path: /todos/
+# @brief: Get all todo items
+# @method: GET
+
 
 @todo_bp.route("/", methods=["GET"])
 def get_todos():
@@ -19,17 +23,19 @@ def get_todos():
                         {"id": 1, "title": "Task", "description": "Details", "completed": false}
                     ]
     """
-    conn, cursor = create_connection()
-    cursor.execute("SELECT * FROM todos")
-    todos = cursor.fetchall()
-    print(todos)
-    conn.close()
-
-    return jsonify([
-        {"id": row[0], "title": row[1],
-            "description": row[2], "completed": bool(row[3])}
-        for row in todos
-    ]), 200
+    try:
+        conn, cursor = create_connection()
+        cursor.execute("SELECT * FROM todos")
+        todos = cursor.fetchall()
+        conn.close()
+        return jsonify([
+            {"id": row[0], "title": row[1],
+                "description": row[2], "completed": bool(row[3])}
+            for row in todos
+        ]), 200
+    except Exception as e:
+        print("Error form get todos: ", e)
+        return jsonify({"message": "Db Problem"}), 409
 
 
 @todo_bp.route("/", methods=["POST"])
@@ -64,16 +70,24 @@ def create_todo():
     """
     data = request.get_json()
     if "title" not in data:
-        return jsonify({"error": "Title is required"}), 400
+        return jsonify({"error": "Title is required"}), 406
+    if not isinstance(data["title"], str):
+        return jsonify({"error": "Title must be a string"}), 406
+    if "description" in data and not isinstance(data["description"], str):
+        return jsonify({"error": "Description must be a string"}), 406
 
-    conn, cursor = create_connection()
-    cursor.execute("INSERT INTO todos (title, description) VALUES (?, ?)",
-                   (data["title"], data.get("description", "")))
-    conn.commit()
-    todo_id = cursor.lastrowid
-    conn.close()
+    try:
+        conn, cursor = create_connection()
+        cursor.execute("INSERT INTO todos (title, description) VALUES (?, ?)",
+                       (data["title"], data.get("description", "")))
+        conn.commit()
+        todo_id = cursor.lastrowid
+        conn.close()
 
-    return jsonify({"message": "Todo created", "id": todo_id}), 201
+        return jsonify({"message": "Todo created", "id": todo_id}), 201
+    except Exception as e:
+        print("Error form create todo: ", e)
+        return jsonify({"message": "Insertion Failed"}), 409
 
 
 @todo_bp.route("/<int:todo_id>", methods=["GET"])
@@ -95,15 +109,23 @@ def get_todo(todo_id):
         404:
             description: Todo not found
     """
-    conn, cursor = create_connection()
-    cursor.execute("SELECT * FROM todos WHERE id = ?", (todo_id,))
-    todo = cursor.fetchone()
-    conn.close()
+    try:
+        conn, cursor = create_connection()
+        cursor.execute("SELECT * FROM todos WHERE id = ?", (todo_id,))
+        todo = cursor.fetchone()
+        conn.close()
 
-    if not todo:
-        return jsonify({"error": "Todo not found"}), 404
+        if not todo:
+            return jsonify({"error": "Todo not found"}), 404
 
-    return jsonify({"id": todo[0], "title": todo[1], "description": todo[2], "completed": bool(todo[3])}), 200
+        return jsonify({"id": todo[0], "title": todo[1], "description": todo[2], "completed": bool(todo[3])}), 200
+    except Exception as e:
+        print("Error form get todo: ", e)
+        return jsonify({"message": "Db Problem"}), 409
+
+# @path: /todos/<int:todo_id>
+# @brief: Update a todo item
+# @method: PUT
 
 
 @todo_bp.route("/<int:todo_id>", methods=["PUT"])
@@ -138,27 +160,41 @@ def update_todo(todo_id):
             description: Todo not found
     """
     data = request.get_json()
-    conn, cursor = create_connection()
-    cursor.execute("SELECT * FROM todos WHERE id = ?", (todo_id,))
-    todo = cursor.fetchone()
+    # Validation
+    if "title" not in data:
+        return jsonify({"error": "Title is required"}), 406
+    if not isinstance(data["title"], str):
+        return jsonify({"error": "Title must be a string"}), 406
+    if "description" in data and not isinstance(data["description"], str):
+        return jsonify({"error": "Description must be a string"}), 406
+    try:
+        conn, cursor = create_connection()
+        cursor.execute("SELECT * FROM todos WHERE id = ?", (todo_id,))
+        todo = cursor.fetchone()
 
-    if not todo:
-        return jsonify({"error": "Todo not found"}), 404
+        if not todo:
+            return jsonify({"error": "Todo not found"}), 404
 
-    cursor.execute("""
-        UPDATE todos 
-        SET title = ?, description = ?, completed = ?
-        WHERE id = ?
-    """, (data.get("title", todo[1]),
-          data.get("description", todo[2]),
-          int(data.get("completed", todo[3])),
-          todo_id))
+        cursor.execute("""
+            UPDATE todos 
+            SET title = ?, description = ?, completed = ?
+            WHERE id = ?
+        """, (data.get("title", todo[1]),
+              data.get("description", todo[2]),
+              int(data.get("completed", todo[3])),
+              todo_id))
 
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Todo updated"}), 200
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "Todo updated"}), 200
+    except Exception as e:
+        print("Error form update todo: ", e)
+        return jsonify({"message": "Bad Request"}), 409
 
 
+# @Path: /todos/<int:todo_id>
+# @brief: Delete a todo item
+# @method: DELETE
 @todo_bp.route("/<int:todo_id>", methods=["DELETE"])
 def delete_todo(todo_id):
     """
@@ -178,9 +214,12 @@ def delete_todo(todo_id):
         404:
             description: Todo not found
     """
-    conn, cursor = create_connection()
-    cursor.execute("DELETE FROM todos WHERE id = ?", (todo_id,))
-    conn.commit()
-    conn.close()
-
-    return jsonify({"message": "Todo deleted"}), 200
+    try:
+        conn, cursor = create_connection()
+        cursor.execute("DELETE FROM todos WHERE id = ?", (todo_id,))
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "Todo deleted"}), 200
+    except Exception as e:
+        print("Error form delete todo: ", e)
+        return jsonify({"message": "Bad Request"}), 409

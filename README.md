@@ -1,4 +1,4 @@
-<h1 align="center">📌 Flask Todo REST API</h1>
+<h1 align="center"> Flask Todo REST API 📌</h1>
 
 <div align="center">
 
@@ -19,8 +19,8 @@ A simple, **RESTful API** for managing **Todo items** using **Flask** and **SQLi
 ## 🚀 Features
 
 ✅ **Flask** backend with RESTful design\
-✅ **SQLite** database (without SQLAlchemy)\
-✅ **CRUD operations** (Create, Read, Update, Delete)\
+✅ **SQLite** database (using sqllite3)\
+✅ **CRUD operations**\
 ✅ **Swagger API documentation** via **Flasgger**\
 ✅ **Unit tests** using **pytest**\
 ✅ **Blueprints** for structured routes\
@@ -114,3 +114,19 @@ python -m unittest test_api.py
 - **SQLite3** - Lightweight database
 - **Flasgger** - Swagger UI for API docs
 - **pytest** - Testing framework
+
+## 📂 Project Structure
+
+```
+📂 root/
+├── 📂 src/
+|   |---📂 routes/
+│   |   ├── routes.py    # API routes & CRUD controllers
+│   ├── database.py      # DB initialization & connection
+├── 📂 utils/
+│   ├── schema_sql.py    # Database schema
+│   ├── test_api.py      # Unit tests
+├── app.py               # Main application entry point
+├── requirements.txt     # Dependencies list
+└── README.md            # Project documentation
+```
