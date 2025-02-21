@@ -24,11 +24,12 @@ def get_todos():
     conn, cursor = create_connection()
     cursor.execute("SELECT * FROM todos")
     todos = cursor.fetchall()
+    print(todos)
     conn.close()
 
     return jsonify([
-        {"id": row["id"], "title": row["title"],
-            "description": row["description"], "completed": bool(row["completed"])}
+        {"id": row[0], "title": row[1],
+            "description": row[2], "completed": bool(row[3])}
         for row in todos
     ]), 200
 
@@ -100,7 +101,7 @@ def get_todo(todo_id):
     if not todo:
         return jsonify({"error": "Todo not found"}), 404
 
-    return jsonify({"id": todo["id"], "title": todo["title"], "description": todo["description"], "completed": bool(todo["completed"])}), 200
+    return jsonify({"id": todo[0], "title": todo[1], "description": todo[2], "completed": bool(todo[3])}), 200
 
 
 @todo_bp.route("/<int:todo_id>", methods=["PUT"])
@@ -146,9 +147,9 @@ def update_todo(todo_id):
         UPDATE todos 
         SET title = ?, description = ?, completed = ?
         WHERE id = ?
-    """, (data.get("title", todo["title"]),
-          data.get("description", todo["description"]),
-          int(data.get("completed", todo["completed"])),
+    """, (data.get("title", todo[1]),
+          data.get("description", todo[2]),
+          int(data.get("completed", todo[3])),
           todo_id))
 
     conn.commit()

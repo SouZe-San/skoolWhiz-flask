@@ -1,8 +1,8 @@
+from utils.schema_sql import TODO_SCHEMA
 import sqlite3
 
 # DB Name
 DB_NAME = 'todoDB.db'
-
 # @create_connection
 # @brief: Create a connection to the database
 # @return: Connection object as conn and Cursor
@@ -11,7 +11,7 @@ DB_NAME = 'todoDB.db'
 def create_connection():
     try:
         conn = sqlite3.connect(DB_NAME, check_same_thread=False)
-        conn.row_factory = sqlite3.Row  # Allows column access by name
+        # conn.row_factory = sqlite3.Row  # Allows column access by name
         return conn, conn.cursor()
     except Exception as e:
         print("Error Form database Connection: ", e)
@@ -24,7 +24,7 @@ def create_connection():
 def db_initialize():
     conn, cursor = create_connection()
     # Executes all SQL commands in schema.sql
-    with open('./utils/schema.sql', "r") as f:
-        cursor.executescript(f.read())
+    # cursor.executescript(TODO_SCHEMA)
+    cursor.execute(TODO_SCHEMA)
     conn.commit()
     conn.close()
