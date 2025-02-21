@@ -13,7 +13,7 @@ db_initialize()
 @app.route('/', methods=['GET'])
 def home():
     """
-        This is an Test Url
+        Api Alive Check
         ---
         responses:
             200:
@@ -21,7 +21,7 @@ def home():
                 examples:
                     application/text: "Welcome 🚀"
     """
-    return "Welcome 🚀,  cccls", 200
+    return "Welcome 🚀", 200
 
 
 # Swagger API Documentation
