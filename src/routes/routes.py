@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from flask_restx import Resource, Namespace, fields
 import sqlite3
 from src.database import create_connection
